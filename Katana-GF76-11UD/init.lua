@@ -11,9 +11,9 @@ Plug("nvim-telescope/telescope.nvim")
 Plug("nvim-tree/nvim-tree.lua")
 Plug("kyazdani42/nvim-web-devicons")
 Plug("lukas-reineke/indent-blankline.nvim")
+Plug("neovim/nvim-lspconfig")
 Plug("williamboman/mason.nvim")
 Plug("williamboman/mason-lspconfig.nvim")
-Plug("neovim/nvim-lspconfig")
 Plug("nvim-lualine/lualine.nvim")
 Plug("onsails/lspkind.nvim")
 Plug("hrsh7th/cmp-nvim-lsp")
@@ -24,9 +24,11 @@ Plug("hrsh7th/nvim-cmp")
 Plug("SirVer/ultisnips")
 Plug("quangnguyen30192/cmp-nvim-ultisnips")
 Plug("kosayoda/nvim-lightbulb")
+Plug("antoinemadec/FixCursorHold.nvim")
 Plug("lewis6991/gitsigns.nvim")
-Plug("svrana/neosolarized.nvim")
-Plug("tjdevries/colorbuddy.nvim")
+Plug("Shatur/neovim-ayu")
+Plug("akinsho/bufferline.nvim")
+Plug("windwp/nvim-ts-autotag")
 
 call("plug#end")
 
@@ -59,8 +61,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.wo.signcolumn = "yes"
 vim.g.neoformat_try_node_exe = 1
-vim.o.guifont = "FiraCode Nerd Font:h12"
-vim.g.neovide_scale_factor = 1.0
+vim.o.guifont = "FiraCode Nerd Font:h9"
 vim.g.neovide_refresh_rate = 144
 vim.g.neovide_no_idle = true
 vim.g.neovide_confirm_quit = false
@@ -73,9 +74,12 @@ vim.g.neovide_padding_left = 0
 vim.g.neovide_cursor_animate_command_line = false
 vim.g.neovide_cursor_animate_in_insert_mode = false
 
+vim.o.background = "dark"
+require("ayu").colorscheme()
+
 require("lualine").setup({
 	options = {
-		theme = "solarized_dark",
+		theme = "ayu",
 	},
 })
 
@@ -90,8 +94,9 @@ require("telescope").setup({
 	},
 })
 
-require("Comment").setup({})
+require("Comment").setup({ comment_empty = false })
 
+require("nvim-ts-autotag").setup()
 require("nvim-tree").setup({
 	reload_on_bufenter = true,
 	sync_root_with_cwd = true,
@@ -105,19 +110,9 @@ require("nvim-treesitter.configs").setup({
 	ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "tsx", "typescript", "vimdoc", "vim" },
 
 	-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-	auto_install = false,
-
+	auto_install = true,
 	highlight = { enable = true },
-	indent = { enable = true, disable = { "python" } },
-	incremental_selection = {
-		enable = true,
-		keymaps = {
-			init_selection = "<c-space>",
-			node_incremental = "<c-space>",
-			scope_incremental = "<c-s>",
-			node_decremental = "<M-space>",
-		},
-	},
+	indent = { enable = true },
 	textobjects = {
 		select = {
 			enable = true,
@@ -222,8 +217,12 @@ require("mason").setup()
 require("mason-lspconfig").setup({
 	ensure_installed = { "lua_ls", "rust_analyzer", "tsserver", "eslint", "html", "jsonls", "vtsls" },
 })
-require("lspconfig").tsserver.setup({})
-
+require("lspconfig").tsserver.setup({
+	filetypes = { "javascript", "typescript", "typescriptreact", "typescript.tsx" },
+	root_dir = function()
+		return vim.loop.cwd()
+	end,
+})
 local map = vim.api.nvim_set_keymap
 
 map("n", "<ESC>", ":nohlsearch<CR>", { silent = true })
@@ -232,6 +231,10 @@ map("n", "<C-F>", ":Telescope live_grep hidden=true<CR>", { noremap = true })
 map("n", "<C-N>", ":NvimTreeFocus <CR>", { noremap = true })
 map("i", "<C-S>", "<ESC>:wall<CR>", { noremap = true })
 map("n", "<C-S>", ":wall<CR>", { noremap = true })
+map("n", "<C-Space>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { silent = true, noremap = true })
+
+vim.keymap.set("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", {})
+vim.keymap.set("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", {})
 
 vim.cmd([[
     augroup cmdline
@@ -244,14 +247,6 @@ vim.cmd([[
 vim.cmd([[
     autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false, scope="cursor"})
 ]])
-
-vim.o.background = "dark"
-
-require("neosolarized").setup({
-	comment_italics = true,
-	background_set = true,
-})
-
 vim.cmd([[
     augroup fmt
     autocmd!
@@ -262,3 +257,12 @@ vim.cmd([[
 vim.diagnostic.config({
 	virtual_text = false,
 })
+
+require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
+require("bufferline").setup({
+	options = {
+		separator_style = "slant",
+	},
+})
+
+require("nvim-web-devicons").setup({ default = true })
