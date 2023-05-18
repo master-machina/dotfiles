@@ -15,7 +15,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
   M.fromList $
     [ ((modm, xK_Return), spawn $ XMonad.terminal conf),
       ((modm, xK_space), sendMessage NextLayout),
-      ((modm, xK_p), spawn "dmenu_run -f -m 0 -fn 'FiraCode Nerd Font-11' -nf '#bfbdb6' -nb '#0b0e14' -sf '#0b0e14' -sb '#bfbdb6'"),
+      ((modm, xK_p), spawn "dmenu_run -f -m 0 -fn 'JetBrainsMono Nerd Font-11' -nf '#bfbdb6' -nb '#0b0e14' -sf '#0b0e14' -sb '#e6b450'"),
       ((modm, xK_r), spawn "xmonad --recompile; xmonad --restart"),
       ((modm, xK_q), kill),
       ((modm, xK_j), windows W.focusDown),
@@ -32,11 +32,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
       ((0, xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume @DEFAULT_SINK@ -10%"),
       ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume @DEFAULT_SINK@ +10%"),
       ((mod1Mask, xK_Shift_L), spawn "toggle-layout")
-      -- ((mod1Mask, xK_Shift_L), spawn "setxkbmap us"),
-      -- ((mod1Mask, xK_Shift_R), spawn "setxkbmap bg phonetic")
     ]
-      ++ [((m .|. modm, k), windows $ onCurrentScreen f i) | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9], (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-      ++ [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f)) | (key, sc) <- zip [xK_w, xK_e] [0 ..], (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+      ++ [((m .|. modm, k), windows $ onCurrentScreen f i) | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_5], (f, m) <- [(W.view, 0), (\i -> W.view i . W.shift i, shiftMask)]]
+      ++ [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f)) | (key, sc) <- zip [xK_w, xK_e] [0 ..], (f, m) <- [(W.view, 0), (\i -> W.view i . W.shift i, shiftMask)]]
 
 myMouseBindings (XConfig {XMonad.modMask = modm}) =
   M.fromList $
@@ -73,7 +71,7 @@ myLogHook xmproc0 xmproc1 =
           ppVisible = \(_ : _ : ws) -> "<box type=Bottom width=2 mb=2 color=#bfbdb6><fc=#bfbdb6> " ++ ws ++ " </fc></box>",
           ppHidden = \(_ : _ : ws) -> "<box type=Bottom width=2 mb=2 color=#bfbdb6><fc=#bfbdb6> " ++ ws ++ " </fc></box>",
           ppHiddenNoWindows = \(_ : _ : ws) -> "<box type=Bottom width=2 mb=2 color=#bfbdb6><fc=#bfbdb6> " ++ ws ++ " </fc></box>",
-          ppOrder = \(ws : _) -> [ws]
+          ppOrder = \(ws:_:w) -> [ws] 
         }
   )
     >> ( dynamicLogWithPP . filterOutWsPP ["0_1", "0_2", "0_3", "0_4", "0_5"] $
@@ -86,6 +84,14 @@ myLogHook xmproc0 xmproc1 =
                ppOrder = \(ws : _) -> [ws]
              }
        )
+myManageHook = composeAll
+     [
+       className =? "Gimp"    --> doFloat
+     , className =? "mpv"    --> doFloat
+     , title =? "Oracle VM VirtualBox Manager"     --> doFloat
+     , className =? "VirtualBox Manager" --> doShift  ( "dev.virtualization" )
+     , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
+     ]
 
 main = do
   xmproc0 <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.conf"
@@ -98,12 +104,13 @@ main = do
           clickJustFocuses = True,
           focusFollowsMouse = False,
           workspaces = myWorkspaces,
-          borderWidth = 2,
-          normalBorderColor = "#11151c",
-          focusedBorderColor = "#11151c",
+          borderWidth = 1,
+          normalBorderColor = "#686868",
+          focusedBorderColor = "#686868",
           keys = myKeys,
           mouseBindings = myMouseBindings,
           layoutHook = myLayoutHook,
           logHook = myLogHook xmproc0 xmproc1,
-          startupHook = myStartupHook
+          startupHook = myStartupHook,
+          manageHook = myManageHook
         }

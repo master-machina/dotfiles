@@ -131,7 +131,7 @@ font:
         #   - (macOS) Menlo
         #   - (Linux/BSD) monospace
         #   - (Windows) Consolas
-        family: FiraCode Nerd Font
+        family: JetBrainsMono Nerd Font
 
         # The `style` can be specified to pick a specific face.
         # style: Regular
@@ -170,7 +170,7 @@ font:
     #style: Bold Italic
 
     # Point size
-    size: 11
+    size: 13
 
     # Offset is the extra space around each character. `offset.y` can be thought
     # of as modifying the line spacing, and `offset.x` as modifying the letter
@@ -913,32 +913,40 @@ cursor:
 # Shades of Purple Alacritty
 # https://github.com/ahmadawais/shades-of-purple-alacritty
 
-# Colors Ayu Dark
+# Colors (Ayu Dark)
 colors:
-    primary:
-        background: "#0b0e14"
-        foreground: "#bfbdb6"
+  primary:
+    background: '#0B0E14'
+    foreground: '#BFBDB6'
+  cursor:
+    background: "#e6b450"
+    text: "#0B0E14"
+  selection:
+    text: '#0B0E14'
+    background: "#e6b450"
+  normal:
+    black: "#11151C"
+    red: "#EA6C73"
+    green: "#7FD962"
+    yellow: '#F9AF4F'
+    blue: '#53BDFA'
+    magenta: '#CDA1FA'
+    cyan: '#90E1C6'
+    white: '#C7C7C7'
+  bright:
+    black: "#686868"
+    red: "#F07178"
+    green: "#AAD94C"
+    yellow: '#FFB454'
+    blue: '#59C2FF'
+    magenta: '#D2A6FF'
+    cyan: '#95E6CB'
+    white: '#FFFFFF'
+  search:
+    matches:
+      foreground: '#0B0E14'
+      background: "#e6b450"
+    focused_match:
+      foreground: '#0B0E14'
+      background: "#e6b450"
 
-    cursor:
-        text: "#0b0e14"
-        cursor: "#e6b450"
-
-    normal:
-        black: "#11151c"
-        red: "#ea6c73"
-        green: "#7fd962"
-        yellow: "#f9af4f"
-        blue: "#53bdfa"
-        magenta: "#cda1fa"
-        cyan: "#90e1c6"
-        white: "#c7c7c7"
-
-    bright:
-        black: "#686868"
-        red: "#f07178"
-        green: "#aad94c"
-        yellow: "#ffb454"
-        blue: "#59c2ff"
-        magenta: "#d2a6ff"
-        cyan: "#95e6cb"
-        white: "#ffffff"
