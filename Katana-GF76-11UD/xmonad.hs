@@ -1,18 +1,18 @@
-import XMonad
-import XMonad.Actions.SpawnOn
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.DynamicLog
-import XMonad.Layout.Spacing
-import XMonad.Util.SpawnOnce
-import XMonad.Util.Run
-import Graphics.X11.ExtraTypes.XF86
-import qualified XMonad.StackSet as W
-import qualified Data.Map as M
+import qualified Data.Map                     as M
+import           Graphics.X11.ExtraTypes.XF86
+import           XMonad
+import           XMonad.Actions.SpawnOn
+import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.ManageDocks
+import           XMonad.Layout.Spacing
+import qualified XMonad.StackSet              as W
+import           XMonad.Util.Run
+import           XMonad.Util.SpawnOnce
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm, xK_Return), spawn $ XMonad.terminal conf)
     , ((modm, xK_space), sendMessage NextLayout)
-    , ((modm, xK_p), spawn "dmenu_run -fn 'FiraCode Nerd Font-11' -nf '#839496' -nb '#002b36' -sf '#002b36' -sb '#d33682'")
+    , ((modm, xK_p), spawn "dmenu_run -fn 'JetBrainsMono Nerd Font-11' -nf '#BFBDB6' -nb '#0B0E14' -sf '#0B0E14' -sb '#e6b450'")
     , ((modm, xK_r), spawn "xmonad --recompile; xmonad --restart")
     , ((modm, xK_q), kill)
     , ((modm, xK_j), windows W.focusDown)
@@ -36,7 +36,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ++
     [((m .|. modm, k), windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -112,16 +112,16 @@ myEventHook = mempty
 
 
 main = do
-  h <- spawnPipe "xmobar -x 0 ~/.config/xmonad/xmobar.conf"
+  h <- spawnPipe "xmobar ~/.config/xmobar/xmobar.hs"
   xmonad $ docks def {
     modMask = mod4Mask,
-    terminal = "alacritty",
+    terminal = "kitty",
     clickJustFocuses = True,
     focusFollowsMouse = False,
     workspaces         = ["1", "2", "3", "4", "5"],
     borderWidth        = 2,
-    normalBorderColor  = "#002b36",
-    focusedBorderColor = "#002b36",
+    normalBorderColor  = "#BFBDB6",
+    focusedBorderColor = "#e6b450",
     keys               = myKeys,
     mouseBindings      = myMouseBindings,
     layoutHook         = myLayout,
@@ -129,20 +129,22 @@ main = do
     handleEventHook    = myEventHook,
     logHook            = dynamicLogWithPP $ xmobarPP {
         ppOutput = hPutStrLn h,
-        ppCurrent = \(ws) -> "<box type=Bottom width=2 mb=2 color=#d33682><fc=#d33682> " ++ ws ++ " </fc></box>",
-        ppHiddenNoWindows = \(ws) -> "<box type=Bottom width=2 mb=2 color=#839496><fc=#839496> " ++ ws ++ " </fc></box>",
-        ppHidden = \(ws) -> "<box type=Bottom width=2 mb=2 color=#839496><fc=#839496> " ++ ws ++ " </fc></box>",
-        ppVisible =  \(ws) -> "<box type=Bottom width=2 mb=2 color=#839496><fc=#839496> " ++ ws ++ " </fc></box>",
-        ppOrder = \(ws:_) -> [ws]
+        ppCurrent = \(ws) -> "<box type=Bottom width=2 mb=2 color=#e6b450><fc=#e6b450> " ++ ws ++ " </fc></box>",
+        ppHiddenNoWindows = \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
+        ppHidden = \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
+        ppVisible =  \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
+        ppTitle = \(t) -> if length t > 0 then "<box type=Bottom width=2 mb=2 color=#e6b450><fc=#e6b450> " ++ t ++ " </fc></box>" else t,
+        ppSep = " ",
+        ppOrder = \(ws:_:t) -> [ws] ++ t
         },
         startupHook = do
-                        spawnOnce "picom -b &"
+                        spawnOnce "picom &"
                         spawnOnce "xset s off &"
                         spawnOnce "xset s 0 0 &"
                         spawnOnce "xset -dpms &"
                         spawnOnce "nitrogen --restore &"
-                        spawnOnce "xinput set-prop 13 344 1 &"
-                        spawnOnce "xinput set-prop 13 365 1 &"
+                        spawnOnce "xinput set-prop 13 345 1 &"
+                        spawnOnce "xinput set-prop 13 366 1 &"
                         spawnOnce "setxkbmap -option ctrl:nocaps &"
                         spawnOnce "xsetroot -cursor_name left_ptr &"
     }
