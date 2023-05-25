@@ -4,7 +4,9 @@ import           XMonad
 import           XMonad.Actions.SpawnOn
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
+import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Spacing
+import           XMonad.Layout.ToggleLayouts
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.Run
 import           XMonad.Util.SpawnOnce
@@ -12,6 +14,7 @@ import           XMonad.Util.SpawnOnce
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm, xK_Return), spawn $ XMonad.terminal conf)
     , ((modm, xK_space), sendMessage NextLayout)
+    , ((modm, xK_f), sendMessage (Toggle "Full"))
     , ((modm, xK_p), spawn "dmenu_run -fn 'JetBrainsMono Nerd Font-11' -nf '#BFBDB6' -nb '#0B0E14' -sf '#0B0E14' -sb '#e6b450'")
     , ((modm, xK_r), spawn "xmonad --recompile; xmonad --restart")
     , ((modm, xK_q), kill)
@@ -68,7 +71,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts $ spacingWithEdge 4 (tiled ||| Full)
+myLayout = toggleLayouts (noBorders Full) (avoidStruts $ spacingWithEdge 4 (tiled ||| Full))
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
