@@ -118,7 +118,7 @@ main = do
   h <- spawnPipe "xmobar ~/.config/xmobar/xmobar.hs"
   xmonad $ docks def {
     modMask = mod4Mask,
-    terminal = "kitty",
+    terminal = "alacritty",
     clickJustFocuses = True,
     focusFollowsMouse = False,
     workspaces         = ["1", "2", "3", "4", "5"],
@@ -136,7 +136,7 @@ main = do
         ppHiddenNoWindows = \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
         ppHidden = \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
         ppVisible =  \(ws) -> "<box type=Bottom width=2 mb=2 color=#BFBDB6><fc=#BFBDB6> " ++ ws ++ " </fc></box>",
-        ppTitle = \(t) -> if length t > 0 then "<box type=Bottom width=2 mb=2 color=#e6b450><fc=#e6b450> " ++ t ++ " </fc></box>" else t,
+        ppTitle = \(t) -> if length t > 0 then "<box type=Bottom width=2 mb=2 color=#e6b450><fc=#e6b450> " ++ shorten 60 t ++ " </fc></box>" else t,
         ppSep = " ",
         ppOrder = \(ws:_:t) -> [ws] ++ t
         },

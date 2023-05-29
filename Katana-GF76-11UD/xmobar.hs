@@ -1,5 +1,5 @@
 Config {
-    font = "JetBrainsMono Nerd Font Bold 10",
+    font = "JetBrainsMono Nerd Font Bold 11",
     position = Static { xpos = 0 , ypos = 0, width = 1920, height = 24 },
     bgColor = "#0b0e14",
     fgColor = "#bfbdb6",
